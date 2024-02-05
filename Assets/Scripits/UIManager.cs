@@ -17,6 +17,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject inGamePanel;
     [SerializeField] private GameObject winPanel;
     [SerializeField] private Image sprite;
+    [SerializeField] public GameObject[] elements;
+    [SerializeField] private GameObject blackWindow;
+    [SerializeField] private AudioSource source;
+    private UniWebView uniWebView;
     private void Awake()
     {
         instance = this;
@@ -26,6 +30,16 @@ public class UIManager : MonoBehaviour
             PlayerPrefs.Save();
         }
         CheckSound();
+    }
+    public void CloseUI()
+    {
+        source.Pause();
+        foreach (GameObject obj in elements)
+        {
+            obj.SetActive(false);
+        }
+        blackWindow.SetActive(true);
+
     }
     public void StartGame()
     {
@@ -91,6 +105,18 @@ public class UIManager : MonoBehaviour
     }
     public void ShowPrivacy(string url)
     {
-
+        var webviewObject = new GameObject("UniWebview");
+        uniWebView = webviewObject.AddComponent<UniWebView>();
+        uniWebView.Frame = new Rect(0, 0, Screen.width, Screen.height);
+        uniWebView.SetShowToolbar(true, false, true, true);
+        uniWebView.Load(url);
+        uniWebView.Show();
+    }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            CloseUI();
+        }
     }
 }
